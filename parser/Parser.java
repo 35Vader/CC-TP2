@@ -8,7 +8,9 @@ public class Parser {
 		try {
 			Scanner scanner = new Scanner(new File("./parser/myfile.txt"));
 			while (scanner.hasNextLine()) {
-				scanner.nextLine().trim().split("/\s+/");
+				for (String s : scanner.nextLine().trim().split(" ")){
+					System.out.println(s);
+				};
 			}
 			scanner.close();
 		} catch (FileNotFoundException e) {
