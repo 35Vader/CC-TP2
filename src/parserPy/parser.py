@@ -52,6 +52,6 @@ def parserDataBase(s):
 def parserConfig(s):
     content = parser(s)
 
-parserConfig("src/dnsFiles/config.txt")
-parserDataBase("src/dnsFiles/DataBase.txt")
+parserConfig("../dnsFiles/config.txt")
+parserDataBase("../dnsFiles/DataBase.txt")
 
