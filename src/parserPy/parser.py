@@ -1,4 +1,7 @@
-
+#import sys
+#sys.path.append("src/utils")
+#from utils import showTable
+from utils import showTable
 
 def parser(s):
     f = open(s, "r")
@@ -21,9 +24,6 @@ def parserDataBase(s):
     dTTL = int(content[1][2])
     dataBase = {}
 
-    print("@ = " + dAt)
-    print("ttl = " + str(dTTL))
-
 
     for op in content[2:]:
         par = str(op[0]).replace("@",dAt)
@@ -32,6 +32,8 @@ def parserDataBase(s):
 
         type = str(op[1])
         value = str(op[2])
+        if type == "CNAME" and value[-1] != ".":
+            value = value + "." + dAt
         ttl = 0
         priority = 0
 
@@ -45,13 +47,45 @@ def parserDataBase(s):
         else:
             dataBase[type]= [{"name":par,"value":value,"ttl":ttl,"priority":priority}]
 
-    print(dataBase)
     return dataBase
 
 
 def parserConfig(s):
     content = parser(s)
+    config = {}
 
-parserConfig("../dnsFiles/config.txt")
-parserDataBase("../dnsFiles/DataBase.txt")
+    for op in content:
+        dom = str(op[0])
+        type = str(op[1])
+        if type in ["SS", "SP", "DD"]:
+            aux = str(op[2]).split(':')
+            value = aux[0]
+            if len(aux) == 2:
+                port = int(aux[1])
+            else:
+                port = -1
+        else:
+            value = str(op[2])
+        
+        if type in config:
+            if type in ["SS", "SP", "DD"]: config[type].append({"domain":dom,"value":value,"port":port})
+            else: config[type].append({"domain":dom,"value":value})
+        else:
+            if type in ["SS", "SP", "DD"]: config[type] = [{"domain":dom,"value":value,"port":port}]
+            else: config[type] = [{"domain":dom,"value":value}]
+    
+    return config
+
+
+
+
+
+
+
+config = parserConfig("src/dnsFiles/config.txt")
+dataBase = parserDataBase("src/dnsFiles/DataBase.txt")
+
+showTable(config)
+#showTable(dataBase)
+
 
