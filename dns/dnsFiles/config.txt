@@ -1,5 +1,5 @@
 # Configuration file for primary server for example.com
-example.com DB /var/dns/example-com.db
+example.com DB dns/dnsFiles/DataBase.txt
 example.com SS 193.123.5.189
 example.com SS 193.123.5.190:5353 #teste
 example.com DD 127.0.0.1

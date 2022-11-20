@@ -1,6 +1,3 @@
-#import sys
-#sys.path.append("src/utils")
-#from utils import showTable
 from utils import showTable
 
 def parser(s):
@@ -75,17 +72,3 @@ def parserConfig(s):
             else: config[type] = [{"domain":dom,"value":value}]
     
     return config
-
-
-
-
-
-
-
-config = parserConfig("src/dnsFiles/config.txt")
-dataBase = parserDataBase("src/dnsFiles/DataBase.txt")
-
-showTable(config)
-#showTable(dataBase)
-
-
