@@ -14,7 +14,7 @@ def parser(s):
     return content
 
 
-def parserDataBase(s):
+def parserDataBaseSP(s):
     content = parser(s)
 
     dAt = content[0][2]
@@ -28,7 +28,10 @@ def parserDataBase(s):
             par = par + "." + dAt
 
         type = str(op[1])
-        value = str(op[2])
+        if op[2].isnumeric(): 
+            value = int(op[2])
+        else:
+            value = str(op[2])
         if type == "CNAME" and value[-1] != ".":
             value = value + "." + dAt
         ttl = 0
@@ -72,3 +75,27 @@ def parserConfig(s):
             else: config[type] = [{"domain":dom,"value":value}]
     
     return config
+
+
+def parserDataBase(content:list[str]):
+    dataBase = {}
+
+    for line in content:
+        op = line.split(";")
+        par = str(op[0])
+        type = str(op[1])
+        value = str(op[2])
+        ttl = 0
+        priority = 0
+
+        if len(op) > 3:
+            ttl = int(op[3])
+            if len(op) > 4:
+                priority = int(op[4])
+
+        if type in dataBase:
+            dataBase[type].append({"name":par,"value":value,"ttl":ttl,"priority":priority})
+        else:
+            dataBase[type]= [{"name":par,"value":value,"ttl":ttl,"priority":priority}]
+
+    return dataBase

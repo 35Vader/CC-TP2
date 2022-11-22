@@ -1,7 +1,16 @@
 import parser
 import json
 
-db = parser.parserDataBase("../dnsFiles/DataBase.txt")
+configFile = ""#input()
+if configFile == "":
+    configFile = "dns/dnsFiles/config.txt"
+
+
+config = parser.parserConfig(configFile)
+db = parser.parserDataBase(config['DB'][0]['value'])
+
+
+
 
 def dict_to_binary(the_dict):
     str = json.dumps(the_dict)
