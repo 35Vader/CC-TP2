@@ -1,3 +1,6 @@
+import socket
+
+
 def printL (text,lenght):
     t = str(text)
     aux = lenght-len(t)
@@ -7,7 +10,6 @@ def printL (text,lenght):
     else:
         aux2 = int(aux/2)
         return ' '*aux2 + t + ' '*aux2 + ' |'
-
 
 def showTable(d:dict):
     for type in d:
@@ -25,3 +27,12 @@ def showTable(d:dict):
                 s2 += printL(value[n],25)
             print(s+s2)
         s = ""
+
+def reciveMensage(socket:socket.socket):
+    msg = socket.recv(2048)
+    if not msg:
+        print("!!!!!  NAO RECEBEU NADA  !!!!!")
+        exit(1)
+    else:
+        ms = msg.decode('utf-8')
+        return ms

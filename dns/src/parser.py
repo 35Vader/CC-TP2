@@ -1,4 +1,4 @@
-from utils import showTable
+import utils
 
 def parser(s):
     f = open(s, "r")
@@ -55,17 +55,17 @@ def parserConfig(s):
     config = {}
 
     for op in content:
-        dom = str(op[0])
-        type = str(op[1])
+        dom = op[0]
+        type = op[1]
         if type in ["SS", "SP", "DD"]:
-            aux = str(op[2]).split(':')
+            aux = op[2].split(':')
             value = aux[0]
             if len(aux) == 2:
                 port = int(aux[1])
             else:
                 port = -1
         else:
-            value = str(op[2])
+            value = op[2]
         
         if type in config:
             if type in ["SS", "SP", "DD"]: config[type].append({"domain":dom,"value":value,"port":port})
@@ -77,14 +77,19 @@ def parserConfig(s):
     return config
 
 
-def parserDataBase(content:list[str]):
+def parserDataBaseSS(content):
     dataBase = {}
 
     for line in content:
         op = line.split(";")
-        par = str(op[0])
-        type = str(op[1])
-        value = str(op[2])
+        par = op[0]
+        type = op[1]
+
+        if op[2].isnumeric(): 
+            value = int(op[2])
+        else:
+            value = str(op[2])
+
         ttl = 0
         priority = 0
 
@@ -97,5 +102,4 @@ def parserDataBase(content:list[str]):
             dataBase[type].append({"name":par,"value":value,"ttl":ttl,"priority":priority})
         else:
             dataBase[type]= [{"name":par,"value":value,"ttl":ttl,"priority":priority}]
-
     return dataBase

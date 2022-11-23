@@ -1,0 +1,2 @@
+# Configuration file for secondary server for cc.tp
+cc.tp SP 10.0.1.10
