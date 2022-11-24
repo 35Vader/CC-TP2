@@ -56,6 +56,8 @@ def parserConfig(s):
 
     for op in content:
         dom = op[0]
+        if dom[-1] != '.':
+            dom = dom + '.'
         type = op[1]
         if type in ["SS", "SP", "DD"]:
             aux = op[2].split(':')

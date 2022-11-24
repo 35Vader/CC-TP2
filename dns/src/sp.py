@@ -1,9 +1,9 @@
 import socket
 import sys 
 import threading
-import time
 import utils
 import parser
+import query
 
 def countEntrys(dataBase):
     i=0
@@ -24,32 +24,33 @@ def sendDB(dataBase):
             content.append(line)
     return content
 
-def processZT (connection:socket.socket, addressTup, config, dataBase):
+def processZT (connection:socket.socket, addressTup, config, dataBase, logFiles, dom, mode):
     (address, port) = addressTup
     for entry in config['SS']:
         if address == entry['value']:
-            msg = utils.reciveMensage(connection)
+            msg = utils.reciveMensageTCP(connection)
             msgAux = msg.split(';')
-            print(f"Recebi uma ligação do cliente {address}")
 
-            if msgAux[0] == 'SOASERIAL' and msgAux[1] == dataBase['SOASP'][0]['name']:
+            if msgAux[0] == 'SOASERIAL' and msgAux[1] == dom:
                 c = str(countEntrys(dataBase))
                 msg = f"{dataBase['SOASERIAL'][0]['value']};{c}"
                 connection.sendall(msg.encode('utf-8'))
 
-                msg = utils.reciveMensage(connection)
+                msg = utils.reciveMensageTCP(connection)
                 if (msg == c):
                     for line in sendDB(dataBase):
                         connection.sendall(line.encode('utf-8'))
-                        msg = utils.reciveMensage(connection)
+                        msg = utils.reciveMensageTCP(connection)
                         if msg != "ACK":
-                            print("Base de dados não enviada")
-                            exit()
-                    print("Base de dados enviada com sucesso")
-                    utils.showTable(dataBase)
-                else:
-                    print("Base de dados atualizada")
+                            utils.writeInLogFiles(logFiles, f"EZ {address}:{port} SP", dom, mode)
+                            connection.close()
+                            return
+                
+                utils.writeInLogFiles(logFiles, f"ZT {address}:{port} SP", dom, mode)
+                connection.close()
+                return
 
+    utils.writeInLogFiles(logFiles, f"EZ {address}:{port} SP", dom, mode)
     connection.close()
 
 def getSP(dataBase):
@@ -59,30 +60,54 @@ def getSP(dataBase):
             endereco = a['value']
     return endereco
 
-def zoneTransferResolver (config, dataBase):
+def zoneTransferResolver (config, dataBase, logFiles, dom, mode):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     endereco = getSP(dataBase)
-    porta = 6000
-    s.bind((endereco, porta))
+    port = 6000
+    s.bind((endereco, port))
 
     s.listen()
-    print(f"Estou à escuta no {endereco}:{porta}")
+    utils.writeInLogFiles(logFiles, f"ST {endereco} {port}", dom, mode)
 
     while True:
         connection, addressTup = s.accept()
-        threading.Thread(target=processZT,args=(connection, addressTup, config, dataBase)).start()
+        threading.Thread(target=processZT,args=(connection, addressTup, config, dataBase, logFiles, dom, mode)).start()
 
     s.close()
 
+def querysResolver (dataBase, logFiles, dom, mode):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-def main(configFile):
+    endereco = getSP(dataBase)
+    port = 3000
+
+    s.bind((endereco, port))
+    utils.writeInLogFiles(logFiles, f"ST {endereco} {port}", dom, mode)
+
+    while True:
+        msg, add = s.recvfrom(1024)
+        threading.Thread(target=(query.processQuery),args=(msg, add, dataBase, logFiles, mode)).start()
+    s.close()
+
+
+def main(configFile, mode):
     config = parser.parserConfig(configFile)
-    dataBase = parser.parserDataBaseSP(config['DB'][0]['value'])
 
+    logFiles = config['LG']
+    dom = config['DB'][0]['domain']
+    utils.writeInLogFiles(logFiles, f"EV {dom} conf-file-read {configFile}", dom, mode)
 
-    threading.Thread(target=zoneTransferResolver,args=(config, dataBase)).start()
+    dataBaseFile = config['DB'][0]['value']
+    dataBase = parser.parserDataBaseSP(dataBaseFile)
+    utils.writeInLogFiles(logFiles, f"EV {dom} db-file-read {dataBaseFile}", dom, mode)
 
+    
+    threading.Thread(target=zoneTransferResolver,args=(config, dataBase, logFiles, dom, mode)).start()
+
+    threading.Thread(target=querysResolver,args=(dataBase, logFiles, dom, mode)).start()
+
+    #utils.writeInLogFiles(logFiles, ["log1","log2","log3"], 'cc.tp.', mode)
     #utils.showTable(config)
     #utils.showTable(dataBase)
     #print(dataBase)
@@ -95,7 +120,7 @@ if __name__ == "__main__":
         configFile = sys.argv[1]
     else:
         configFile = 'dns/dnsFiles/configSP.txt'
-    main(configFile)
+    main(configFile, True)
 
 
 

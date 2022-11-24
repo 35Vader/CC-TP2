@@ -3,6 +3,6 @@ cc.tp DB dns/dnsFiles/DataBase.txt
 cc.tp SS 10.0.0.10
 cc.tp SS 10.0.3.10 #teste
 cc.tp DD 127.0.0.1
-cc.tp LG /dns/log/cc-tp.log
-all LG /dns/log/all.log
-root ST /dns/rootservers.db
+cc.tp LG dns/log/cc-tp.log
+all LG dns/log/all.log
+root ST dns/rootservers.db

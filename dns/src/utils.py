@@ -1,4 +1,5 @@
 import socket
+import datetime
 
 
 def printL (text,lenght):
@@ -28,11 +29,37 @@ def showTable(d:dict):
             print(s+s2)
         s = ""
 
-def reciveMensage(socket:socket.socket):
+def reciveMensageTCP(socket:socket.socket):
     msg = socket.recv(2048)
     if not msg:
-        print("!!!!!  NAO RECEBEU NADA  !!!!!")
-        exit(1)
+        return None
     else:
         ms = msg.decode('utf-8')
         return ms
+
+def writeInLogFiles (logFiles, msg, dom, mode):
+    nextlog = ""
+    for filePath in logFiles:
+        domain = filePath['domain']
+        if domain == dom or domain == 'all.':
+            try:
+                f = open(filePath['value'], "x")
+                nextlog = nextlog + f"EV {dom} log-file-create {filePath['value']}"
+            except:
+                f = open(filePath['value'], "a")
+            if type(msg) is list:
+                for msgAux in msg:
+                    f.write(f"{str(datetime.datetime.now())[:-3]} {msgAux}\n")
+                    if domain !='all.' and mode:
+                        print(f"{str(datetime.datetime.now())[:-3]} {msgAux}")
+            else:
+                f.write(f"{str(datetime.datetime.now())[:-3]} {msg}\n")
+                if domain !='all.' and mode:
+                    print(f"{str(datetime.datetime.now())[:-3]} {msg}")
+            
+            if domain !='all.' and nextlog != "":
+                f.write(f"{str(datetime.datetime.now())[:-3]} {nextlog}\n")
+                if mode:
+                    print(f"{str(datetime.datetime.now())[:-3]} {nextlog}")
+
+            f.close()

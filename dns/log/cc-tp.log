@@ -1,0 +1,10 @@
+2022-11-23 23:18:11.376 EV cc.tp. conf-file-read dns/dnsFiles/configSP.txt
+2022-11-23 23:18:11.377 EV cc.tp. log-file-create dns/log/cc-tp.log
+2022-11-23 23:18:11.377 EV cc.tp. db-file-read dns/dnsFiles/DataBase.txt
+2022-11-23 23:18:11.377 ST 10.0.1.10 6000
+2022-11-23 23:18:11.377 ST 10.0.1.10 3000
+2022-11-23 23:18:19.884 ZT 10.0.3.10:40954 SP
+2022-11-23 23:29:32.662 EV cc.tp. conf-file-read dns/dnsFiles/configSP.txt
+2022-11-23 23:29:32.662 EV cc.tp. db-file-read dns/dnsFiles/DataBase.txt
+2022-11-23 23:29:32.663 ST 10.0.1.10 6000
+2022-11-23 23:29:32.663 ST 10.0.1.10 3000
