@@ -7,7 +7,8 @@ def main(address, dom, t, r, mode):
     msg=f"3001,{r},0,0,0,0;{dom},{t};"
     s.sendto(msg.encode('utf-8'), (address, 3000))
     msg, add = s.recvfrom(1024)
-    query.compactQuery(msg.decode('utf-8'))
+    if mode:
+        query.compactQuery(msg.decode('utf-8'))
 
 
 if __name__ == "__main__":

@@ -53,22 +53,25 @@ def processZT (connection:socket.socket, addressTup, config, dataBase, logFiles,
     utils.writeInLogFiles(logFiles, f"EZ {address}:{port} SP", dom, mode)
     connection.close()
 
-def getSP(dataBase):
-    sp = dataBase['SOASP'][0]['value']
-    for a in dataBase['A']:
-        if a['name'] == sp:
-            endereco = a['value']
-    return endereco
+
 
 def zoneTransferResolver (config, dataBase, logFiles, dom, mode):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    endereco = getSP(dataBase)
+    endereco = 'localhost'
     port = 6000
-    s.bind((endereco, port))
+    try:
+        s.bind(('', port))
+    except:
+        print(f"Couldnt bind to {endereco}:{port}")
+        sys.exit()
 
     s.listen()
-    utils.writeInLogFiles(logFiles, f"ST {endereco} {port}", dom, mode)
+
+    if mode:
+        utils.writeInLogFiles(logFiles, f"ST {endereco} {port} debug", dom, mode)
+    else:
+        utils.writeInLogFiles(logFiles, f"ST {endereco} {port} shy", dom, mode)
 
     while True:
         connection, addressTup = s.accept()
@@ -76,19 +79,6 @@ def zoneTransferResolver (config, dataBase, logFiles, dom, mode):
 
     s.close()
 
-def querysResolver (dataBase, logFiles, dom, mode):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    endereco = getSP(dataBase)
-    port = 3000
-
-    s.bind((endereco, port))
-    utils.writeInLogFiles(logFiles, f"ST {endereco} {port}", dom, mode)
-
-    while True:
-        msg, add = s.recvfrom(1024)
-        threading.Thread(target=(query.processQuery),args=(msg, add, dataBase, logFiles, mode)).start()
-    s.close()
 
 
 def main(configFile, mode):
@@ -99,13 +89,19 @@ def main(configFile, mode):
     utils.writeInLogFiles(logFiles, f"EV {dom} conf-file-read {configFile}", dom, mode)
 
     dataBaseFile = config['DB'][0]['value']
-    dataBase = parser.parserDataBaseSP(dataBaseFile)
-    utils.writeInLogFiles(logFiles, f"EV {dom} db-file-read {dataBaseFile}", dom, mode)
+    dataBase = parser.parserDataBaseSP(dataBaseFile,dom)
 
-    
+    if type(dataBase) == str:
+        utils.writeInLogFiles(logFiles, f"FL {dom} db-file-not-read {dataBase} {dataBaseFile} ", dom, mode)
+        exit(-1)
+    else:
+        utils.writeInLogFiles(logFiles, f"EV {dom} db-file-read {dataBaseFile}", dom, mode)
+
     threading.Thread(target=zoneTransferResolver,args=(config, dataBase, logFiles, dom, mode)).start()
 
-    threading.Thread(target=querysResolver,args=(dataBase, logFiles, dom, mode)).start()
+
+    
+    query.querysResolver(dataBase, logFiles, dom, mode)
 
     #utils.writeInLogFiles(logFiles, ["log1","log2","log3"], 'cc.tp.', mode)
     #utils.showTable(config)
@@ -116,13 +112,15 @@ def main(configFile, mode):
 
 
 if __name__ == "__main__":
+    debug = False
+    configFile = 'dns/dnsFiles/configSP.txt'
     if len(sys.argv) > 1:
-        configFile = sys.argv[1]
-    else:
-        configFile = 'dns/dnsFiles/configSP.txt'
-    main(configFile, True)
-
-
-
-
-
+        if sys.argv[1] != "-d":
+            configFile = sys.argv[1]
+            if len(sys.argv) > 2 and sys.argv[2] == "-d":
+                debug = True
+        else:
+            debug = True
+            if len(sys.argv) > 2 and sys.argv[2] != "-d":
+                configFile = sys.argv[2]
+    main(configFile, debug)

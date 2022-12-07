@@ -1,6 +1,9 @@
-# DNS database file for domain example.com
+# DNS database file for domain cc.tp.
 # It also includes a pointer to the primary server
 # of the smaller.example.com subdomain
+
+# [default] -> {type { name, value, ttl, priority }}
+# [name] [type] [value] [ttl] [priority]
 
 @ DEFAULT cc.tp.
 TTL DEFAULT 86400

@@ -1,11 +1,18 @@
 import socket
 import parser
 import sys
+import threading
 import utils
+import query
+
 
 def getDataBase(address, serialNum, dom):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((address, 6000))
+    try:
+        s.connect((address, 6000))
+    except:
+        print(f"Couldnt bind to {address}:{6000}")
+        sys.exit()
 
     msg=f"SOASERIAL;{dom}"
     s.sendall(msg.encode('utf-8'))
@@ -51,19 +58,26 @@ def main(configFile, mode):
     else:
         utils.writeInLogFiles(logFiles, f"ZT {config['SP'][0]['value']}:{6000} SS", dom, mode)
     
-
+    query.querysResolver(dataBase, logFiles, dom, mode)
 
     #utils.showTable(config)
-    utils.showTable(dataBase)
+    #utils.showTable(dataBase)
     #print(dataBase)
     #print(content)
 
 
 
 if __name__ == "__main__":
+    debug = False
+    configFile = 'dns/dnsFiles/configSS.txt'
     if len(sys.argv) > 1:
-        configFile = sys.argv[1]
-    else:
-        configFile = 'dns/dnsFiles/configSS.txt'
-    main(configFile, True)
+        if sys.argv[1] != "-d":
+            configFile = sys.argv[1]
+            if len(sys.argv) > 2 and sys.argv[2] == "-d":
+                debug = True
+        else:
+            debug = True
+            if len(sys.argv) > 2 and sys.argv[2] != "-d":
+                configFile = sys.argv[2]
+    main(configFile, debug)
 

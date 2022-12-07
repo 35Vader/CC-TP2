@@ -63,3 +63,12 @@ def writeInLogFiles (logFiles, msg, dom, mode):
                     print(f"{str(datetime.datetime.now())[:-3]} {nextlog}")
 
             f.close()
+
+
+def getSP(dataBase):
+    sp = dataBase['SOASP'][0]['value']
+    for a in dataBase['A']:
+        if a['name'] == sp:
+            endereco = a['value']
+    return endereco
+

@@ -1,4 +1,9 @@
 # Configuration file for secondary server for cc.tp
+
+# [SS, SP, DD] -> {type {domain value port}}
+# [default]    -> {type {domain value}}
+# [domain] [type] [value] [port]
+
 cc.tp SP 10.0.1.10
 all LG dns/log/all.log
 cc.tp LG dns/log/cc-tp-ss.log

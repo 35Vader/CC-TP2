@@ -1,4 +1,6 @@
 import socket
+import sys
+import threading
 import utils
 
 
@@ -55,7 +57,7 @@ def getValues(type, dom, dataBase):
     flag = False
     for entry in dataBase[type]:
         s = str(entry['name'])
-        if dom == s or type == 'A':
+        if dom == s:
             flag = True
             s += ' ' + type + ' '
             s += str(entry['value']) + ' '
@@ -105,7 +107,7 @@ def processQuery(msgCod, add, dataBase, logFiles, mode):
     if dic['QUERY_INFO_TYPE'] in dataBase.keys():
         (rv, namesR) = getValues(dic['QUERY_INFO_TYPE'], dic['QUERY_INFO_NAME'], dataBase)
         if rv == None:
-             dic['RESPONSE_CODE'] = 2
+             dic['RESPONSE_CODE'] = 1
         elif rv == []:
             dic['RESPONSE_CODE'] = 1
         else:
@@ -143,3 +145,26 @@ def compactQuery(msg):
             print(f"{m2},")
         for m3 in m[3].split(','):
             print(f"{m3},")
+
+
+def querysResolver (dataBase, logFiles, dom, mode):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    endereco='localhost'
+    port = 3000
+    
+    try:
+        s.bind(('', port))
+    except:
+        print(f"Couldnt bind to {endereco}:{port}")
+        sys.exit()
+
+    if mode:
+        utils.writeInLogFiles(logFiles, f"ST {endereco} {port} debug", dom, mode)
+    else:
+        utils.writeInLogFiles(logFiles, f"ST {endereco} {port} shy", dom, mode)
+
+    while True:
+        msg, add = s.recvfrom(1024)
+        threading.Thread(target=(processQuery),args=(msg, add, dataBase, logFiles, mode)).start()
+    s.close()
