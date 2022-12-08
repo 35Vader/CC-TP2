@@ -89,7 +89,7 @@ def main(configFile, mode):
     utils.writeInLogFiles(logFiles, f"EV {dom} conf-file-read {configFile}", dom, mode)
 
     dataBaseFile = config['DB'][0]['value']
-    dataBase = parser.parserDataBaseSP(dataBaseFile,dom)
+    dataBase = parser.parserDataBaseSP(dataBaseFile)
 
     if type(dataBase) == str:
         utils.writeInLogFiles(logFiles, f"FL {dom} db-file-not-read {dataBase} {dataBaseFile} ", dom, mode)
@@ -97,17 +97,17 @@ def main(configFile, mode):
     else:
         utils.writeInLogFiles(logFiles, f"EV {dom} db-file-read {dataBaseFile}", dom, mode)
 
-    threading.Thread(target=zoneTransferResolver,args=(config, dataBase, logFiles, dom, mode)).start()
+    # threading.Thread(target=zoneTransferResolver,args=(config, dataBase, logFiles, dom, mode)).start()
 
 
-    
-    query.querysResolver(dataBase, logFiles, dom, mode)
 
-    #utils.writeInLogFiles(logFiles, ["log1","log2","log3"], 'cc.tp.', mode)
-    #utils.showTable(config)
-    #utils.showTable(dataBase)
-    #print(dataBase)
-    #print(content)
+    # query.querysResolver(dataBase, logFiles, dom, mode)
+
+    # utils.writeInLogFiles(logFiles, ["log1","log2","log3"], 'cc.tp.', mode)
+    # utils.showTable(config)
+    utils.showTable(dataBase)
+    # print(dataBase)
+    # print(content)
 
 
 

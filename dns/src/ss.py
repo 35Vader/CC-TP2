@@ -58,10 +58,10 @@ def main(configFile, mode):
     else:
         utils.writeInLogFiles(logFiles, f"ZT {config['SP'][0]['value']}:{6000} SS", dom, mode)
     
-    query.querysResolver(dataBase, logFiles, dom, mode)
+    # query.querysResolver(dataBase, logFiles, dom, mode)
 
     #utils.showTable(config)
-    #utils.showTable(dataBase)
+    utils.showTable(dataBase)
     #print(dataBase)
     #print(content)
 

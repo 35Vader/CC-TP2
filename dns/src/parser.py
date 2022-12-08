@@ -1,126 +1,133 @@
-import socket
-import sys 
-import threading
 import utils
-import parser
-import query
 
-def countEntrys(dataBase):
-    i=0
-    for type in dataBase.keys():
-        for entry in dataBase[type]:
-            i+=1
-    return i
+def parser(s):
+    f = open(s, "r")
+    doc = f.read()
+    f.close()
 
-def sendDB(dataBase):
     content = []
-    for type in dataBase.keys():
-        for entry in dataBase[type]:
-            line = str(entry['name']) + ';' 
-            line += str(type) + ';'
-            line += str(entry['value']) + ';'
-            line += str(entry['ttl']) + ';'
-            line += str(entry['priority'])
-            content.append(line)
+
+    for line in doc.split("\n"):
+        text = line.split("#")[0].split(" ")
+        if len(text) >= 3:
+            content.append(text)
     return content
 
-def processZT (connection:socket.socket, addressTup, config, dataBase, logFiles, dom, mode):
-    (address, port) = addressTup
-    for entry in config['SS']:
-        if address == entry['value']:
-            msg = utils.reciveMensageTCP(connection)
-            msgAux = msg.split(';')
 
-            if msgAux[0] == 'SOASERIAL' and msgAux[1] == dom:
-                c = str(countEntrys(dataBase))
-                msg = f"{dataBase['SOASERIAL'][0]['value']};{c}"
-                connection.sendall(msg.encode('utf-8'))
+def parserDataBaseSP(s):
+    content = parser(s)
 
-                msg = utils.reciveMensageTCP(connection)
-                if (msg == c):
-                    for line in sendDB(dataBase):
-                        connection.sendall(line.encode('utf-8'))
-                        msg = utils.reciveMensageTCP(connection)
-                        if msg != "ACK":
-                            utils.writeInLogFiles(logFiles, f"EZ {address}:{port} SP", dom, mode)
-                            connection.close()
-                            return
-                
-                utils.writeInLogFiles(logFiles, f"ZT {address}:{port} SP", dom, mode)
-                connection.close()
-                return
+    dAt = None
 
-    utils.writeInLogFiles(logFiles, f"EZ {address}:{port} SP", dom, mode)
-    connection.close()
-
-
-
-def zoneTransferResolver (config, dataBase, logFiles, dom, mode):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    endereco = 'localhost'
-    port = 6000
-    try:
-        s.bind(('', port))
-    except:
-        print(f"Couldnt bind to {endereco}:{port}")
-        sys.exit()
-
-    s.listen()
-
-    if mode:
-        utils.writeInLogFiles(logFiles, f"ST {endereco} {port} debug", dom, mode)
-    else:
-        utils.writeInLogFiles(logFiles, f"ST {endereco} {port} shy", dom, mode)
-
-    while True:
-        connection, addressTup = s.accept()
-        threading.Thread(target=processZT,args=(connection, addressTup, config, dataBase, logFiles, dom, mode)).start()
-
-    s.close()
-
-
-
-def main(configFile, mode):
-    config = parser.parserConfig(configFile)
-
-    logFiles = config['LG']
-    dom = config['DB'][0]['domain']
-    utils.writeInLogFiles(logFiles, f"EV {dom} conf-file-read {configFile}", dom, mode)
-
-    dataBaseFile = config['DB'][0]['value']
-    dataBase = parser.parserDataBaseSP(dataBaseFile,dom)
-
-    if type(dataBase) == str:
-        utils.writeInLogFiles(logFiles, f"FL {dom} db-file-not-read {dataBase} {dataBaseFile} ", dom, mode)
-        exit(-1)
-    else:
-        utils.writeInLogFiles(logFiles, f"EV {dom} db-file-read {dataBaseFile}", dom, mode)
-
-    threading.Thread(target=zoneTransferResolver,args=(config, dataBase, logFiles, dom, mode)).start()
-
-
-    
-    query.querysResolver(dataBase, logFiles, dom, mode)
-
-    #utils.writeInLogFiles(logFiles, ["log1","log2","log3"], 'cc.tp.', mode)
-    #utils.showTable(config)
-    #utils.showTable(dataBase)
-    #print(dataBase)
-    #print(content)
-
-
-
-if __name__ == "__main__":
-    debug = False
-    configFile = 'dns/dnsFiles/configSP.txt'
-    if len(sys.argv) > 1:
-        if sys.argv[1] != "-d":
-            configFile = sys.argv[1]
-            if len(sys.argv) > 2 and sys.argv[2] == "-d":
-                debug = True
+    for i in range(len(content)):
+        if content[0][1] == "DEFAULT" and content[0][0] == "@":
+            dAt = str(content[0][2])
+            content = content[1:]
+        elif content[0][1] == "DEFAULT" and content[0][0] == "TTL":
+            dTTL = int(content[0][2])
+            content = content[1:]
+        elif content[0][1] == "SOASP":
+            dAt = '.'.join(str(content[0][2]).split('.')[1:])
         else:
-            debug = True
-            if len(sys.argv) > 2 and sys.argv[2] != "-d":
-                configFile = sys.argv[2]
-    main(configFile, debug)
+            break
+
+    if dAt == None:
+        return None
+
+    dataBase = {}
+
+    for op in content[2:]:
+        dom = str(op[0]).replace("@",dAt)
+        if dom[-1] != ".":
+            dom = dom + "." + dAt
+
+        type = str(op[1])
+        if op[2].isnumeric(): 
+            value = int(op[2])
+        else:
+            value = str(op[2])
+        if type == "CNAME" and value[-1] != ".":
+            value = value + "." + dAt
+
+        if len(op) > 3:
+            if op[3] == "TTL" and dTTL != None: 
+                ttl = dTTL
+            elif op[3].isnumeric:
+                ttl = int(op[3])
+            else:
+                return None
+
+            if len(op) > 4: 
+                priority = int(op[4])
+            else:
+                priority = 0
+        
+        if dom in dataBase:
+            if type in dataBase[dom]:
+                dataBase[dom][type].append({"value":value,"ttl":ttl,"priority":priority})
+            else:
+                dataBase[dom][type] = [{"value":value,"ttl":ttl,"priority":priority}]
+        else:
+            dataBase[dom] = {type : [{"value":value,"ttl":ttl,"priority":priority}]}
+
+    return dataBase
+
+
+def parserConfig(s):
+    content = parser(s)
+    config = {}
+
+    for op in content:
+        dom = op[0]
+        if dom[-1] != '.':
+            dom = dom + '.'
+        type = op[1]
+        if type in ["SS", "SP", "DD"]:
+            aux = op[2].split(':')
+            value = aux[0]
+            if len(aux) == 2:
+                port = int(aux[1])
+            else:
+                port = -1
+        else:
+            value = op[2]
+        
+        if type in config:
+            if type in ["SS", "SP", "DD"]: config[type].append({"domain":dom,"value":value,"port":port})
+            else: config[type].append({"domain":dom,"value":value})
+        else:
+            if type in ["SS", "SP", "DD"]: config[type] = [{"domain":dom,"value":value,"port":port}]
+            else: config[type] = [{"domain":dom,"value":value}]
+    
+    return config
+
+
+def parserDataBaseSS(content):
+    dataBase = {}
+
+    for line in content:
+        op = line.split(";")
+        dom = op[0]
+        type = op[1]
+
+        if op[2].isnumeric(): 
+            value = int(op[2])
+        else:
+            value = str(op[2])
+
+        ttl = 0
+        priority = 0
+
+        if len(op) > 3:
+            ttl = int(op[3])
+            if len(op) > 4:
+                priority = int(op[4])
+
+        if dom in dataBase:
+            if type in dataBase[dom]:
+                dataBase[dom][type].append({"value":value,"ttl":ttl,"priority":priority})
+            else:
+                dataBase[dom][type] = [{"value":value,"ttl":ttl,"priority":priority}]
+        else:
+            dataBase[dom] = {type : [{"value":value,"ttl":ttl,"priority":priority}]}
+    return dataBase

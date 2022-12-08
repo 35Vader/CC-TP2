@@ -2,8 +2,8 @@
 # It also includes a pointer to the primary server
 # of the smaller.example.com subdomain
 
-# [default] -> {type { name, value, ttl, priority }}
-# [name] [type] [value] [ttl] [priority]
+# [default] -> {domain {type { value, ttl, priority }}
+# [domain] [type] [value] [ttl] [priority]
 
 @ DEFAULT cc.tp.
 TTL DEFAULT 86400

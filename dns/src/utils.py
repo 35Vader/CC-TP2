@@ -3,7 +3,10 @@ import datetime
 
 
 def printL (text,lenght):
-    t = str(text)
+    if isinstance(text, str):
+        t = "'" + str(text) + "'"
+    else:
+        t = str(text)
     aux = lenght-len(t)
     if aux%2 == 0:
         aux2 = int(aux/2)
@@ -13,21 +16,15 @@ def printL (text,lenght):
         return ' '*aux2 + t + ' '*aux2 + ' |'
 
 def showTable(d:dict):
-    for type in d:
-        value = d[type]
-        s = printL(type,12)
-        if list(value):
-            for v in value:
-                s2 = ""
-                for n in v:
-                    s2 += printL(v[n],25)
-                print(s+s2)
-        else:
-            s2 = ""
-            for n in value:
-                s2 += printL(value[n],25)
-            print(s+s2)
-        s = ""
+    for dom in d.keys():
+        s = printL(dom,25) 
+        for type in dict(d[dom]).keys():
+            s2 = printL(type,12)
+            for listval in d[dom][type]:
+                s3 = ""
+                for n in listval.values():
+                    s3 += printL(n,25)
+                print(s + s2 + s3)
 
 def reciveMensageTCP(socket:socket.socket):
     msg = socket.recv(2048)
@@ -65,10 +62,4 @@ def writeInLogFiles (logFiles, msg, dom, mode):
             f.close()
 
 
-def getSP(dataBase):
-    sp = dataBase['SOASP'][0]['value']
-    for a in dataBase['A']:
-        if a['name'] == sp:
-            endereco = a['value']
-    return endereco
 
