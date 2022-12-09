@@ -1,6 +1,6 @@
 import utils
 
-def parser(s):
+def readFiles(s):
     f = open(s, "r")
     doc = f.read()
     f.close()
@@ -14,8 +14,8 @@ def parser(s):
     return content
 
 
-def parserDataBaseSP(s):
-    content = parser(s)
+def readFileDataBaseSP(s):
+    content = readFiles(s)
 
     dAt = None
 
@@ -32,11 +32,11 @@ def parserDataBaseSP(s):
             break
 
     if dAt == None:
-        return None
+        return "decoding-error--unrecognized-format"
 
     dataBase = {}
 
-    for op in content[2:]:
+    for op in content:
         dom = str(op[0]).replace("@",dAt)
         if dom[-1] != ".":
             dom = dom + "." + dAt
@@ -55,7 +55,7 @@ def parserDataBaseSP(s):
             elif op[3].isnumeric:
                 ttl = int(op[3])
             else:
-                return None
+                return "decoding-error--TTL-not-defined"
 
             if len(op) > 4: 
                 priority = int(op[4])
@@ -73,36 +73,44 @@ def parserDataBaseSP(s):
     return dataBase
 
 
-def parserConfig(s):
-    content = parser(s)
+def readFileConfig(s):
+    content = readFiles(s)
     config = {}
 
-    for op in content:
-        dom = op[0]
-        if dom[-1] != '.':
-            dom = dom + '.'
-        type = op[1]
-        if type in ["SS", "SP", "DD"]:
-            aux = op[2].split(':')
-            value = aux[0]
-            if len(aux) == 2:
-                port = int(aux[1])
+    try:
+        for op in content:
+            dom = op[0]
+            if dom[-1] != '.':
+                dom = dom + '.'
+            type = op[1]
+            if type in ["SS", "SP", "DD"]:
+                aux = op[2].split(':')
+                value = aux[0]
+                if len(aux) == 2:
+                    port = int(aux[1])
+                else:
+                    port = -1
             else:
-                port = -1
-        else:
-            value = op[2]
-        
-        if type in config:
-            if type in ["SS", "SP", "DD"]: config[type].append({"domain":dom,"value":value,"port":port})
-            else: config[type].append({"domain":dom,"value":value})
-        else:
-            if type in ["SS", "SP", "DD"]: config[type] = [{"domain":dom,"value":value,"port":port}]
-            else: config[type] = [{"domain":dom,"value":value}]
-    
-    return config
+                value = op[2]
+            
+            if type in ["SS", "SP", "DD"]: 
+                v = {"value":value,"port":port}
+            else: 
+                v = {"value":value}
+
+            if dom in config:
+                if type in config[dom]:
+                    config[dom][type].append(v)
+                else:
+                    config[dom][type] = [v]
+            else:
+                config[dom] = {type : [v]}
+        return config
+    except:
+        return None
 
 
-def parserDataBaseSS(content):
+def getDataBaseSS(content):
     dataBase = {}
 
     for line in content:

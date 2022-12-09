@@ -6,9 +6,12 @@ def main(address, dom, t, r, mode):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     msg=f"3001,{r},0,0,0,0;{dom},{t};"
     s.sendto(msg.encode('utf-8'), (address, 3000))
-    msg, add = s.recvfrom(1024)
+    con, add = s.recvfrom(1024)
+    msg = con.decode('utf-8')
     if mode:
-        query.compactQuery(msg.decode('utf-8'))
+        query.compactQuery(msg)
+        query.printQuery(msg)
+
 
 
 if __name__ == "__main__":

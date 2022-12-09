@@ -15,6 +15,10 @@ def printL (text,lenght):
         aux2 = int(aux/2)
         return ' '*aux2 + t + ' '*aux2 + ' |'
 
+def printL2 (text,lenght,b):
+    t = "[" + str(text).split('/')[-1] + "]"
+    return t + ' '*(lenght-len(t)) + '|'
+
 def showTable(d:dict):
     for dom in d.keys():
         s = printL(dom,25) 
@@ -23,7 +27,7 @@ def showTable(d:dict):
             for listval in d[dom][type]:
                 s3 = ""
                 for n in listval.values():
-                    s3 += printL(n,25)
+                    s3 += printL(n,22)
                 print(s + s2 + s3)
 
 def reciveMensageTCP(socket:socket.socket):
@@ -34,32 +38,26 @@ def reciveMensageTCP(socket:socket.socket):
         ms = msg.decode('utf-8')
         return ms
 
-def writeInLogFiles (logFiles, msg, dom, mode):
-    nextlog = ""
-    for filePath in logFiles:
-        domain = filePath['domain']
-        if domain == dom or domain == 'all.':
-            try:
-                f = open(filePath['value'], "x")
-                nextlog = nextlog + f"EV {dom} log-file-create {filePath['value']}"
-            except:
-                f = open(filePath['value'], "a")
-            if type(msg) is list:
-                for msgAux in msg:
-                    f.write(f"{str(datetime.datetime.now())[:-3]} {msgAux}\n")
-                    if domain !='all.' and mode:
-                        print(f"{str(datetime.datetime.now())[:-3]} {msgAux}")
-            else:
-                f.write(f"{str(datetime.datetime.now())[:-3]} {msg}\n")
-                if domain !='all.' and mode:
-                    print(f"{str(datetime.datetime.now())[:-3]} {msg}")
-            
-            if domain !='all.' and nextlog != "":
-                f.write(f"{str(datetime.datetime.now())[:-3]} {nextlog}\n")
-                if mode:
-                    print(f"{str(datetime.datetime.now())[:-3]} {nextlog}")
+def writeInLogFiles (logFiles, msg, mode):
+    nextlog = []
 
-            f.close()
+    for file in logFiles:
+        filePath = file['value']
+        try:
+            f = open(filePath, "x")
+            nextlog.append(f"EV @ log-file-create {filePath}")
+        except:
+            f = open(filePath, "a")
 
+        f.write(f"{str(datetime.datetime.now())[:-3]} {msg}\n")
+        if mode:
 
+            print(f"{printL2(filePath,15,True)} {str(datetime.datetime.now())[:-3]} {msg}")
+        
+        for log in nextlog:
+            f.write(f"{str(datetime.datetime.now())[:-3]} {log}\n")
+            if mode:
+                print(f"{printL2(filePath,15,True)} {str(datetime.datetime.now())[:-3]} {log}")
+
+        f.close()
 
