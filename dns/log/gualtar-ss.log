@@ -1,0 +1,24 @@
+2023-01-02 17:25:50.397 ZT 10.0.0.13:6000 SS
+2023-01-02 17:25:50.397 EV @ log-file-create log/gualtar-ss.log
+2023-01-02 17:25:50.398 ST 10.0.0.17:3000 debug
+2023-01-02 17:33:43.389 EV @ new-cache-entry query-cache
+2023-01-02 17:33:43.389 RP 10.0.14.11:43858
+3001,A,0,3,3,3;inf.gualtar.uni.,NS;inf.gualtar.uni. NS ns1.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns2.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns3.inf.gualtar.uni. 86400;inf.gualtar.uni. NS ns1.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns2.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns3.inf.gualtar.uni. 86400;ns1.inf.gualtar.uni. A 10.0.1.17 86400,ns2.inf.gualtar.uni. A 10.0.15.10 86400,ns3.inf.gualtar.uni. A 10.0.1.16 86400;
+2023-01-02 17:36:22.185 ZT 10.0.0.13:6000 SS
+2023-01-02 17:36:22.186 ST 10.0.0.17:3000 debug
+2023-01-02 17:50:24.635 EV @ new-cache-entry query-cache
+2023-01-02 17:50:24.635 RP 10.0.14.11:33986
+3001,A,1,0,3,3;gualtar.uni.,T;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;
+2023-01-02 17:51:22.482 EV @ new-cache-entry query-cache
+2023-01-02 17:51:22.482 RP 10.0.14.11:45347
+3001,A,1,0,3,3;ns4.gualtar.uni.,A;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;
+2023-01-02 17:51:23.484 RP 10.0.14.11:45347
+3001,,1,0,3,3;ns4.gualtar.uni.,A;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;
+2023-01-02 17:51:24.487 RP 10.0.14.11:45347
+3001,,1,0,3,3;ns4.gualtar.uni.,A;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;
+2023-01-02 17:51:25.490 RP 10.0.14.11:45347
+3001,,1,0,3,3;ns4.gualtar.uni.,A;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;
+2023-01-02 17:51:26.493 RP 10.0.14.11:45347
+3001,,1,0,3,3;ns4.gualtar.uni.,A;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;
+2023-01-02 17:51:37.076 RP 10.0.14.11:33040
+3001,,1,0,3,3;ns4.gualtar.uni.,A;gualtar.uni. NS ns1.gualtar.uni. 86400,gualtar.uni. NS ns2.gualtar.uni. 86400,gualtar.uni. NS ns3.gualtar.uni. 86400;ns1.gualtar.uni. A 10.0.0.13 86400,ns2.gualtar.uni. A 10.0.14.10 86400,ns3.gualtar.uni. A 10.0.0.17 86400;

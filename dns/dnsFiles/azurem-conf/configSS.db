@@ -1,0 +1,11 @@
+# Configuration file for secondary server for azurem.uni.
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+azurem.uni SP 10.0.16.10
+azurem.uni DD 127.0.0.1
+azurem.uni LG log/azurem-ss.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

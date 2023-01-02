@@ -1,0 +1,8 @@
+
+gualtar.uni DD 10.0.14.10
+gualtar.uni DD 10.0.0.17
+gualtar.uni DD 10.0.0.13
+
+gualtar.uni LG log/gualtar.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

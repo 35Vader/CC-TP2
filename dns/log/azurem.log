@@ -1,0 +1,7 @@
+2023-01-02 17:23:31.060 EV @ db-file-read dnsFiles/azurem-conf/DB.db
+2023-01-02 17:23:31.060 EV @ log-file-create log/azurem.log
+2023-01-02 17:23:31.061 ST 10.0.16.10 6000 debug
+2023-01-02 17:23:31.062 ST 10.0.16.10:3000 debug
+2023-01-02 17:37:54.466 EV @ new-cache-entry query-cache
+2023-01-02 17:37:54.466 RP 10.0.14.11:55002
+3001,A,0,2,3,5;azurem.uni.,MX;azurem.uni. MX mx1.azurem.uni. 86400 10,azurem.uni. MX mx2.azurem.uni. 86400 20;azurem.uni. NS ns1.azurem.uni. 86400,azurem.uni. NS ns2.azurem.uni. 86400,azurem.uni. NS ns3.azurem.uni. 86400;ns1.azurem.uni. A 10.0.16.10 86400,ns2.azurem.uni. A 10.0.17.10 86400,ns3.azurem.uni. A 10.0.16.16 86400,mx1.azurem.uni. A 10.0.16.11 86400,mx2.azurem.uni. A 10.0.16.12 86400;

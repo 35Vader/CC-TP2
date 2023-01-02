@@ -1,0 +1,10 @@
+2023-01-02 17:27:16.851 EV @ db-file-read dnsFiles/inf-conf/DB.db
+2023-01-02 17:27:16.851 EV @ log-file-create log/inf.log
+2023-01-02 17:27:16.851 ST 10.0.1.17 6000 debug
+2023-01-02 17:27:16.852 ST 10.0.1.17:3000 debug
+2023-01-02 17:34:12.901 EV @ new-cache-entry query-cache
+2023-01-02 17:34:12.902 RP 10.0.14.11:44204
+3001,A,0,2,3,5;inf.gualtar.uni.,MX;inf.gualtar.uni. MX mx1.inf.gualtar.uni. 86400 10,inf.gualtar.uni. MX mx2.inf.gualtar.uni. 86400 20;inf.gualtar.uni. NS ns1.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns2.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns3.inf.gualtar.uni. 86400;ns1.inf.gualtar.uni. A 10.0.1.17 86400,ns2.inf.gualtar.uni. A 10.0.15.10 86400,ns3.inf.gualtar.uni. A 10.0.1.16 86400,mx1.inf.gualtar.uni. A 10.0.1.15 86400,mx2.inf.gualtar.uni. A 10.0.1.12 86400;
+2023-01-02 17:35:33.721 EV @ new-cache-entry query-cache
+2023-01-02 17:35:33.721 RP 10.0.14.11:34057
+3001,A,0,1,3,3;ftp.inf.gualtar.uni.,A;ftp.inf.gualtar.uni. A 10.0.1.11 86400;inf.gualtar.uni. NS ns1.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns2.inf.gualtar.uni. 86400,inf.gualtar.uni. NS ns3.inf.gualtar.uni. 86400;ns1.inf.gualtar.uni. A 10.0.1.17 86400,ns2.inf.gualtar.uni. A 10.0.15.10 86400,ns3.inf.gualtar.uni. A 10.0.1.16 86400;

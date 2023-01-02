@@ -1,0 +1,13 @@
+# Configuration file for primary server for inf.gualtar.uni.
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+inf.gualtar.uni DB dnsFiles/inf-conf/DB.db
+inf.gualtar.uni SS 10.0.15.10
+inf.gualtar.uni SS 10.0.1.16
+inf.gualtar.uni DD 127.0.0.1
+inf.gualtar.uni LG log/inf.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

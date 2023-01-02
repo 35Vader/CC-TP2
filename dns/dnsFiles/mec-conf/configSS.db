@@ -1,0 +1,11 @@
+# Configuration file for secondary server for mec.azurem.uni.
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+mec.azurem.uni SP 10.0.18.10
+mec.azurem.uni DD 127.0.0.1
+mec.azurem.uni LG log/mec-ss.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

@@ -1,0 +1,10 @@
+
+
+
+azurem.uni DD 10.0.16.10
+azurem.uni DD 10.0.17.10
+azurem.uni DD 10.0.16.16
+
+tp LG log/azurem.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

@@ -236,7 +236,7 @@ node n8 {
     type router
     model host
     network-config {
-	hostname ST1
+	hostname ST1-uni
 	!
 	interface eth0
 	 ip address 10.0.13.10/24
@@ -253,7 +253,7 @@ node n9 {
     type router
     model host
     network-config {
-	hostname ST2
+	hostname ST2-uni
 	!
 	interface eth0
 	 ip address 10.0.12.10/24
@@ -270,7 +270,7 @@ node n27 {
     type router
     model host
     network-config {
-	hostname ftp-tp
+	hostname ftp-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.11/24
@@ -287,7 +287,7 @@ node n28 {
     type router
     model host
     network-config {
-	hostname www2-tp
+	hostname www2-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.12/24
@@ -304,7 +304,7 @@ node n29 {
     type router
     model host
     network-config {
-	hostname ns1-tp
+	hostname ns1-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.13/24
@@ -321,7 +321,7 @@ node n30 {
     type router
     model host
     network-config {
-	hostname mx1-tp
+	hostname mx1-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.14/24
@@ -329,8 +329,8 @@ node n30 {
 	!
     }
     canvas c1
-    iconcoords {1739.0 549.0}
-    labelcoords {1741.0 586.0}
+    iconcoords {1738.0 549.0}
+    labelcoords {1740.0 586.0}
     interface-peer {eth0 n42}
 }
 
@@ -338,7 +338,7 @@ node n31 {
     type router
     model host
     network-config {
-	hostname mx2-tp
+	hostname mx2-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.15/24
@@ -355,7 +355,7 @@ node n32 {
     type router
     model host
     network-config {
-	hostname www1-tp
+	hostname www1-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.16/24
@@ -372,7 +372,7 @@ node n34 {
     type router
     model host
     network-config {
-	hostname ftp-cc
+	hostname ftp-inf
 	!
 	interface eth0
 	 ip address 10.0.1.11/24
@@ -389,7 +389,7 @@ node n35 {
     type router
     model host
     network-config {
-	hostname mx2-cc
+	hostname mx2-inf
 	!
 	interface eth0
 	 ip address 10.0.1.12/24
@@ -406,7 +406,7 @@ node n36 {
     type router
     model host
     network-config {
-	hostname www1-cc
+	hostname www1-inf
 	!
 	interface eth0
 	 ip address 10.0.1.13/24
@@ -423,7 +423,7 @@ node n37 {
     type router
     model host
     network-config {
-	hostname www2-cc
+	hostname www2-inf
 	!
 	interface eth0
 	 ip address 10.0.1.14/24
@@ -440,7 +440,7 @@ node n38 {
     type router
     model host
     network-config {
-	hostname mx1-cc
+	hostname mx1-inf
 	!
 	interface eth0
 	 ip address 10.0.1.15/24
@@ -457,7 +457,7 @@ node n39 {
     type router
     model host
     network-config {
-	hostname ns3-cc
+	hostname ns3-inf
 	!
 	interface eth0
 	 ip address 10.0.1.16/24
@@ -474,7 +474,7 @@ node n40 {
     type router
     model host
     network-config {
-	hostname ns1-cc
+	hostname ns1-inf
 	!
 	interface eth0
 	 ip address 10.0.1.17/24
@@ -491,7 +491,7 @@ node n41 {
     type router
     model host
     network-config {
-	hostname ns3-tp
+	hostname ns3-gualtar
 	!
 	interface eth0
 	 ip address 10.0.0.17/24
@@ -574,7 +574,7 @@ node n44 {
     type router
     model host
     network-config {
-	hostname ns2-tp
+	hostname ns2-gualtar
 	!
 	interface eth0
 	 ip address 10.0.14.10/24
@@ -591,7 +591,7 @@ node n45 {
     type router
     model host
     network-config {
-	hostname ns2-cc
+	hostname ns2-inf
 	!
 	interface eth0
 	 ip address 10.0.15.10/24
@@ -608,7 +608,7 @@ node n46 {
     type router
     model host
     network-config {
-	hostname ftp-out
+	hostname ftp-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.13/24
@@ -625,7 +625,7 @@ node n47 {
     type router
     model host
     network-config {
-	hostname www2-out
+	hostname www2-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.15/24
@@ -642,7 +642,7 @@ node n48 {
     type router
     model host
     network-config {
-	hostname ns1-out
+	hostname ns1-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.10/24
@@ -659,7 +659,7 @@ node n49 {
     type router
     model host
     network-config {
-	hostname mx1-out
+	hostname mx1-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.11/24
@@ -676,7 +676,7 @@ node n50 {
     type router
     model host
     network-config {
-	hostname mx2-out
+	hostname mx2-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.12/24
@@ -693,7 +693,7 @@ node n51 {
     type router
     model host
     network-config {
-	hostname www1-out
+	hostname www1-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.14/24
@@ -710,7 +710,7 @@ node n52 {
     type router
     model host
     network-config {
-	hostname ftp-in
+	hostname ftp-mec
 	!
 	interface eth0
 	 ip address 10.0.18.13/24
@@ -727,7 +727,7 @@ node n53 {
     type router
     model host
     network-config {
-	hostname mx2-in
+	hostname mx2-mec
 	!
 	interface eth0
 	 ip address 10.0.18.11/24
@@ -744,7 +744,7 @@ node n54 {
     type router
     model host
     network-config {
-	hostname www1-in
+	hostname www1-mec
 	!
 	interface eth0
 	 ip address 10.0.18.14/24
@@ -761,7 +761,7 @@ node n55 {
     type router
     model host
     network-config {
-	hostname www2-in
+	hostname www2-mec
 	!
 	interface eth0
 	 ip address 10.0.18.15/24
@@ -778,7 +778,7 @@ node n56 {
     type router
     model host
     network-config {
-	hostname mx1-in
+	hostname mx1-mec
 	!
 	interface eth0
 	 ip address 10.0.18.12/24
@@ -795,7 +795,7 @@ node n57 {
     type router
     model host
     network-config {
-	hostname ns3-in
+	hostname ns3-mec
 	!
 	interface eth0
 	 ip address 10.0.18.16/24
@@ -812,7 +812,7 @@ node n58 {
     type router
     model host
     network-config {
-	hostname ns1-in
+	hostname ns1-mec
 	!
 	interface eth0
 	 ip address 10.0.18.10/24
@@ -829,7 +829,7 @@ node n59 {
     type router
     model host
     network-config {
-	hostname ns3-out
+	hostname ns3-azurem
 	!
 	interface eth0
 	 ip address 10.0.16.16/24
@@ -846,7 +846,7 @@ node n64 {
     type router
     model host
     network-config {
-	hostname ns2-out
+	hostname ns2-azurem
 	!
 	interface eth0
 	 ip address 10.0.17.10/24
@@ -863,7 +863,7 @@ node n65 {
     type router
     model host
     network-config {
-	hostname ns2-in
+	hostname ns2-mec
 	!
 	interface eth0
 	 ip address 10.0.19.10/24
@@ -946,7 +946,7 @@ node n14 {
     type router
     model host
     network-config {
-	hostname sr-tp
+	hostname sr-gualtar
 	!
 	interface eth0
 	 ip address 10.0.14.11/24
@@ -963,7 +963,7 @@ node n15 {
     type router
     model host
     network-config {
-	hostname sr-cc
+	hostname sr-inf
 	!
 	interface eth0
 	 ip address 10.0.15.11/24
@@ -980,7 +980,7 @@ node n16 {
     type router
     model host
     network-config {
-	hostname sr-out
+	hostname sr-guimaraes
 	!
 	interface eth0
 	 ip address 10.0.17.11/24
@@ -988,8 +988,8 @@ node n16 {
 	!
     }
     canvas c1
-    iconcoords {695.0 948.0}
-    labelcoords {695.0 980.0}
+    iconcoords {695.0 947.0}
+    labelcoords {695.0 979.0}
     interface-peer {eth0 n11}
 }
 
@@ -997,7 +997,7 @@ node n17 {
     type router
     model host
     network-config {
-	hostname sr-in
+	hostname sr-mec
 	!
 	interface eth0
 	 ip address 10.0.19.11/24

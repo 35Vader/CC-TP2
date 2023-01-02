@@ -1,0 +1,11 @@
+# Configuration file for secondary server for gualtar.uni.
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+gualtar.uni SP 10.0.0.13
+gualtar.uni DD 127.0.0.1
+gualtar.uni LG log/gualtar-ss.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

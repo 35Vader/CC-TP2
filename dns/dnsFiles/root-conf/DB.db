@@ -14,27 +14,27 @@
 # [data] -> {domain {type { value, ttl, priority }}
 # [domain] [type] [value] [ttl] [priority]
 
-@ DEFAULT .
+@ DEFAULT uni.
 TTL DEFAULT 86400
 
-@ SOASP . TTL
-@ SOAADMIN dns\.admin. TTL
+@ SOASP uni. TTL
+@ SOAADMIN dns\admin.uni. TTL
 @ SOASERIAL 0130122022 TTL
 @ SOAREFRESH 14400 TTL
 @ SOARETRY 3600 TTL
 @ SOAEXPIRE 604800 TTL
 
 
-tp. NS ns1.tp. TTL
-tp. NS ns2.tp. TTL
-tp. NS ns3.tp. TTL
-out. NS ns1.out. TTL
-out. NS ns2.out. TTL
-out. NS ns3.out. TTL
+gualtar.@ NS ns1.gualtar.uni. TTL
+gualtar.@ NS ns2.gualtar.uni. TTL
+gualtar.@ NS ns3.gualtar.uni. TTL
+azurem.@ NS ns1.azurem.uni. TTL
+azurem.@ NS ns2.azurem.uni. TTL
+azurem.@ NS ns3.azurem.uni. TTL
 
-ns1.tp. A 10.0.0.13 TTL
-ns2.tp. A 10.0.14.10 TTL
-ns3.tp. A 10.0.0.17 TTL
-ns1.out. A 10.0.16.10 TTL
-ns2.out. A 10.0.17.10 TTL
-ns3.out. A 10.0.16.16 TTL
+ns1.gualtar.@ A 10.0.0.13 TTL
+ns2.gualtar.@ A 10.0.14.10 TTL
+ns3.gualtar.@ A 10.0.0.17 TTL
+ns1.azurem.@ A 10.0.16.10 TTL
+ns2.azurem.@ A 10.0.17.10 TTL
+ns3.azurem.@ A 10.0.16.16 TTL

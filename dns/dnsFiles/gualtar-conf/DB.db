@@ -1,0 +1,54 @@
+# DNS database file for domain gualtar.uni.
+# It also includes a pointer to the primary server
+# of the smaller.example.com subdomain
+
+# [dataBase] -> {
+#     domain : {
+#         data : [data]
+#         domainLog : logs from this domain
+#         isSP : boolean
+#         (*)ttl : validade da informação --> apenas se for SS
+#     }
+# }
+
+# [data] -> {domain {type { value, ttl, priority }}
+# [domain] [type] [value] [ttl] [priority]
+
+@ DEFAULT gualtar.uni.
+TTL DEFAULT 86400
+
+@ SOASP ns1.gualtar.uni. TTL
+@ SOAADMIN dns\.admin.gualtar.uni. TTL
+@ SOASERIAL 0130122022 TTL
+@ SOAREFRESH 14400 TTL
+@ SOARETRY 3600 TTL
+@ SOAEXPIRE 604800 TTL
+
+@ NS ns1.gualtar.uni. TTL
+@ NS ns2.gualtar.uni. TTL
+@ NS ns3.gualtar.uni. TTL
+
+inf.@ NS ns1.inf.gualtar.uni. TTL
+inf.@ NS ns2.inf.gualtar.uni. TTL
+inf.@ NS ns3.inf.gualtar.uni. TTL
+
+@ MX mx1.gualtar.uni. TTL 10
+@ MX mx2.gualtar.uni. TTL 20
+
+ns1 A 10.0.0.13 TTL
+ns2 A 10.0.14.10 TTL
+ns3 A 10.0.0.17 TTL
+ns1.inf A 10.0.1.17 TTL
+ns2.inf A 10.0.15.10 TTL
+ns3.inf A 10.0.1.16 TTL
+mx1 A 10.0.0.14 TTL
+mx2 A 10.0.0.15 TTL
+www1 A 10.0.0.16 TTL 200
+www2 A 10.0.0.12 TTL 200
+ftp A 10.0.0.11 TTL
+
+sp CNAME ns1 TTL
+ss1 CNAME ns2 TTL
+ss2 CNAME ns3 TTL
+mail1 CNAME mx1 TTL
+mail2 CNAME mx2 TTL

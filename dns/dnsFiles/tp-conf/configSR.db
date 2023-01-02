@@ -1,8 +1,0 @@
-
-tp DD 10.0.14.10
-tp DD 10.0.0.17
-tp DD 10.0.0.13
-
-tp LG log/tp.log
-all LG log/all.log
-root ST dnsFiles/rootservers.db
