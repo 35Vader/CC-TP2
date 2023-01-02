@@ -4,10 +4,10 @@
 # [default]    -> { domain { type [{value}] } }
 # [domain] [type] [value] [port]
 
-cc.tp DB dns/dnsFiles/DataBase.txt
-cc.tp SS 10.0.0.10
-cc.tp SS 10.0.3.10
+cc.tp DB dnsFiles/cc-conf/DB.db
+cc.tp SS 10.0.15.10
+cc.tp SS 10.0.1.16
 cc.tp DD 127.0.0.1
-cc.tp LG dns/log/cc-tp.log
-all LG dns/log/all.log
-root ST dns/rootservers.db
+cc.tp LG log/cc.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

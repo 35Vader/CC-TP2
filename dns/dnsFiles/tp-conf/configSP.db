@@ -1,0 +1,13 @@
+# Configuration file for primary server for tp
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+tp DB dnsFiles/tp-conf/DB.db
+tp SS 10.0.0.17
+tp SS 10.0.14.10
+tp DD 127.0.0.1
+tp LG log/tp.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

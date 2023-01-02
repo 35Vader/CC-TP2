@@ -1,0 +1,40 @@
+# DNS database file for domain .
+# It also includes a pointer to the primary server
+# of the smaller.example.com subdomain
+
+# [dataBase] -> {
+#     domain : {
+#         data : [data]
+#         domainLog : logs from this domain
+#         isSP : boolean
+#         (*)ttl : validade da informação --> apenas se for SS
+#     }
+# }
+
+# [data] -> {domain {type { value, ttl, priority }}
+# [domain] [type] [value] [ttl] [priority]
+
+@ DEFAULT .
+TTL DEFAULT 86400
+
+@ SOASP . TTL
+@ SOAADMIN dns\.admin. TTL
+@ SOASERIAL 0130122022 TTL
+@ SOAREFRESH 14400 TTL
+@ SOARETRY 3600 TTL
+@ SOAEXPIRE 604800 TTL
+
+
+tp. NS ns1.tp. TTL
+tp. NS ns2.tp. TTL
+tp. NS ns3.tp. TTL
+out. NS ns1.out. TTL
+out. NS ns2.out. TTL
+out. NS ns3.out. TTL
+
+ns1.tp. A 10.0.0.13 TTL
+ns2.tp. A 10.0.14.10 TTL
+ns3.tp. A 10.0.0.17 TTL
+ns1.out. A 10.0.16.10 TTL
+ns2.out. A 10.0.17.10 TTL
+ns3.out. A 10.0.16.16 TTL

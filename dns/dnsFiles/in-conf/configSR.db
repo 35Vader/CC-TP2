@@ -1,0 +1,10 @@
+
+
+
+in.out DD 10.0.18.10
+in.out DD 10.0.19.10
+in.out DD 10.0.18.16
+
+tp LG log/in.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db

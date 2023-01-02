@@ -1,0 +1,9 @@
+# Configuration file for primary server for .
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+. DB dnsFiles/root-conf/DB.db
+. DD 127.0.0.1
+all LG log/all.log

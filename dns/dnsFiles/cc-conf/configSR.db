@@ -1,0 +1,10 @@
+
+
+
+cc.tp DD 10.0.1.17
+cc.tp DD 10.0.15.10
+cc.tp DD 10.0.1.16
+
+tp LG log/cc.log
+all LG log/all.log
+root ST dnsFiles/rootservers.db
