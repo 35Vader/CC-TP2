@@ -120,7 +120,6 @@ class ResponseServer:
 
 # iterativo
         elif 'A' in dic['FLAGS'] and 'Q' in dic['FLAGS']:
-            print("me2")
             dic['FLAGS'].remove('A')
             domain = dic['QUERY_INFO_NAME']
             res = Utils.decodeQuery(Utils.encodeQuery(dic))

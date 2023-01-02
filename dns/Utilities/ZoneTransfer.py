@@ -149,5 +149,6 @@ class ZoneTransfer:
         else:
             s.sendall("ACK".encode('utf-8'))
             return 0
+        s.sendall("ACK".encode('utf-8'))
         s.close()
         return infoDataBase
