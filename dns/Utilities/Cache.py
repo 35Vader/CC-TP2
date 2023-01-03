@@ -42,6 +42,8 @@ class Cache:
                     print('\n----------------')
                     print(f"timestamp -> {self.timestamp}")
                     print('----------------\n')
+                elif s == "c":
+                    print('\n'*50)
                 elif s == "sc":
                     print('\n---------------------------------------------------------\n')
                     Utils.showTable(self.serverCache)
@@ -118,7 +120,6 @@ class Cache:
                 )
             if minttl == -1 or minttl > int(entryList[3]):
                 minttl = int(entryList[3])
-            Utils.writeInLogFiles(self.allLog, f"EV @ new-cache-entry server-cache", self.mode)
         self.putQueryCache(dic, minttl, False)
 
     def put (self, domain, typeQ, value, ttl:int, priority = 0, origin = "OTHERS", logs = None):
@@ -134,19 +135,17 @@ class Cache:
             if typeQ in self.serverCache[domain]:
                 for i in range(len(self.serverCache[domain][typeQ])):
                     if self.serverCache[domain][typeQ][i]["value"] == value:
-                        if self.serverCache[domain][typeQ][i]["origin"] != "FILE":
-                            if origin == "OTHERS" and self.serverCache[domain][typeQ][i]["origin"] == "SP":
-                                return
-                            # Entry updated
-                            self.serverCache[domain][typeQ][i]["ttl"] = ttl
-                            self.serverCache[domain][typeQ][i]["timestamp"] = ttl + self.timestamp
-                            self.serverCache[domain][typeQ][i]["priority"] = priority
-                            self.serverCache[domain][typeQ][i]["origin"] = origin
-                        else:
+                        if self.serverCache[domain][typeQ][i]["origin"] == "FILE" or (self.serverCache[domain][typeQ][i]["origin"] == "SP" and origin == "OTHERS"):
                             # invalid operation
-                            pass
+                            return
+                        # Entry update
+                        self.serverCache[domain][typeQ][i]["ttl"] = ttl
+                        self.serverCache[domain][typeQ][i]["timestamp"] = ttl + self.timestamp
+                        self.serverCache[domain][typeQ][i]["priority"] = priority
+                        self.serverCache[domain][typeQ][i]["origin"] = origin
+                        Utils.writeInLogFiles(self.allLog, f"EV @ update-cache-entry server-cache", self.mode)
                         return
-                # New entry
+                # New entry new value
                 self.serverCache[domain][typeQ].append({
                     "value": value,
                     "ttl": ttl,
@@ -154,8 +153,9 @@ class Cache:
                     "priority": priority,
                     "origin": origin
                 })
+                Utils.writeInLogFiles(self.allLog, f"EV @ new-cache-entry server-cache", self.mode)
             else:
-                # New entry
+                # New entry new type
                 self.serverCache[domain][typeQ] = [{
                     "value": value,
                     "ttl": ttl,
@@ -163,8 +163,9 @@ class Cache:
                     "priority": priority,
                     "origin": origin
                 }]
+                Utils.writeInLogFiles(self.allLog, f"EV @ new-cache-entry server-cache", self.mode)
         else:
-            # New entry
+            # New entry new domain
             self.serverCache[domain] = {
                 "domainLog" : logs,
                 typeQ : [{
@@ -175,6 +176,7 @@ class Cache:
                     "origin": origin
                 }]
             }
+            Utils.writeInLogFiles(self.allLog, f"EV @ new-cache-entry server-cache", self.mode)
 
     def get(self, domain, typeQ):
         a = True
@@ -413,16 +415,16 @@ class Cache:
                 dic['N_VALUES'] = self.queryCache[domain][typeQ]['N_VALUES']
                 dic['N_AUTHORITIES'] = self.queryCache[domain][typeQ]['N_AUTHORITIES']
                 dic['N_EXTRA_VALUES'] = self.queryCache[domain][typeQ]['N_EXTRA_VALUES']
-                return (True, dic, self.queryCache[domain][typeQ]['a'])
+                return (True, dic, bool(self.queryCache[domain][typeQ]['a']))
             else:
                 self.queryCache[domain].pop(typeQ)
                 if len(self.queryCache[domain]) == 0:
                     self.queryCache.pop(domain)
         
-        return (False, None, True)
+        return (False, None, False)
 
     def processQuery(self, dic):
-        a = 0
+        a = True
         try:
             domain = dic['QUERY_INFO_NAME']
             typeQ = dic['QUERY_INFO_TYPE']
@@ -438,10 +440,7 @@ class Cache:
             if queryCacheHit:
                 print("-> Query Cache Hit")
                 dic = dicAux
-                if not aAux:
-                    a = 2
-                else:
-                    a = 3
+                a = aAux
             else:
                 getR = self.get(domain, typeQ)
                 minttl = -1
@@ -450,7 +449,7 @@ class Cache:
                     if getR != 1:
                         (getResult, aAux) = getR
                         if not aAux:
-                            a = 1
+                            a = False
                         (rv, namesR, minttl) = self.getResponse(typeQ, domain, getResult)
                         dic['RESPONSE_VALUES'] = rv
                         dic['N_VALUES'] = len(rv)
@@ -458,7 +457,7 @@ class Cache:
                         dic['RESPONSE_CODE'] = 1
                     (av, namesA, ttl, aAux) = self.getAuthorities(domAuth)
                     if not aAux:
-                        a = 1
+                        a = False
                     dic['AUTHORITIES_VALUES'] = av
                     dic['N_AUTHORITIES'] = len(av)
                     if minttl == -1 or minttl > ttl:
@@ -467,20 +466,20 @@ class Cache:
                     dic['RESPONSE_CODE'] = 2
                     (av, namesA, ttl, aAux) = self.getAuthorities("")
                     if not aAux:
-                        a = 1
+                        a = False
                     dic['AUTHORITIES_VALUES'] = av
                     dic['N_AUTHORITIES'] = len(av)
                     if minttl == -1 or minttl > ttl:
                         minttl = ttl
                 (ex, ttl, aAux) = self.getExtra(namesA, namesR, typeQ, domain)
                 if not aAux:
-                    a = 1
+                    a = False
                 dic['EXTRA_VALUES'] = ex
                 dic['N_EXTRA_VALUES'] = len(ex)
                 if minttl == -1 or minttl > ttl:
                     minttl = ttl
 
-                self.putQueryCache(dic, minttl, a == 0)
+                self.putQueryCache(dic, minttl, a)
                 if dic['RESPONSE_CODE'] == 2:
                     Utils.writeInLogFiles(self.allLog, f"EV @ new-cache-entry query-cache", self.mode)
                 else:
@@ -488,7 +487,7 @@ class Cache:
 
         except:
             dic['RESPONSE_CODE'] = 3
-            return (dic, self.allLog, 1)
+            return (dic, self.allLog, False)
         if dic['RESPONSE_CODE'] == 2:
             return (dic, self.allLog, a)
         else:

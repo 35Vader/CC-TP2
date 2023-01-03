@@ -1,19 +1,21 @@
 import socket
 import sys
 import threading
+import time
 
 from Utilities.Utils import Utils
 from Utilities.Cache import Cache
 from Utilities.ReadFiles import ReadFiles
 
 
-def getServers(dic, domain = None):
+def getServers(dic, domain = None, excludeDomain = None):
     listAuth = []
     listAddress = []
     for a in dic['AUTHORITIES_VALUES']:
         auth = a.split(' ')
         if domain == None or str(domain).endswith(auth[0]):
-            listAuth.append(auth[2])
+            if excludeDomain == None or excludeDomain != auth[0]:
+                listAuth.append(auth[2])
 
     for e in dic['EXTRA_VALUES']:
         extra = e.split(' ')
@@ -51,6 +53,14 @@ class ResponseServer:
                     lg += configServer[domain]['LG']
                 self.configSR[domain] = configServer[domain]['DD']
 
+    def removeDomainIP(self, listServer):
+        ip = Utils.get_ip()
+        if ip in listServer:
+            return []
+        else:
+            return listServer
+
+
 
     def handleQuery(self, connection, addressTup):
         try:
@@ -68,8 +78,6 @@ class ResponseServer:
                 dic['FLAGS'].remove('A')
             res = Utils.decodeQuery(Utils.encodeQuery(dic))
             (res, logs, a) = self.cache.processQuery(res)
-            if a == 0 or a == 2:
-                res['FLAGS'].append('A')
             listServer = []
             con = None
             clientS = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,35 +93,44 @@ class ResponseServer:
                     if str(domain).endswith(dom):
                         for i in self.configSR[dom]:
                             if i['value'] == "127.0.0.1":
-                                listServer = self.st
+                                listServer = getServers(res, domain, dom)
                                 break
                             listServer.append(i['value'])
                     else:
                         listServer = self.st
-                if listServer == []:
-                    listServer = getServers(res, domain)
             elif res['RESPONSE_CODE'] == 1:
-                listServer = getServers(res)
+                listServer = self.removeDomainIP(getServers(res))
             for server in listServer:
                 try:
+                    i = 0.05
                     serverS.sendto(Utils.encodeQuery(dic).encode('utf-8'), (server,3000))
                     Utils.writeInLogFiles(logs, f"QE {server}:3000\n{Utils.encodeQuery(dic)}", self.mode)
-                    con, add = serverS.recvfrom(1024)
+                    while True:
+                        clientS.sendto("wait".encode('utf-8'), addressTup)
+                        con, add = serverS.recvfrom(1024)
+                        if con.decode('utf-8') != "wait":
+                            break
+                        else:
+                            time.sleep(i)
+                            i += 0.05
                     Utils.writeInLogFiles(logs, f"RR {add[0]}:{add[1]}\n{con.decode('utf-8')}", self.mode)
                     break
                 except socket.timeout:
+                    Utils.writeInLogFiles(logs, f"TO {server}:3000 query", self.mode)
                     pass
                 except:
                     pass
 
             if con == None:
                 res['FLAGS'].remove('Q')
+                if a:
+                    res['FLAGS'].append('A')
                 con = Utils.encodeQuery(res).encode('utf-8')
+            else:
+                self.cache.loadNewQuery(Utils.decodeQuery(con.decode('utf-8')))
 
             clientS.sendto(con, addressTup)
             Utils.writeInLogFiles(logs, f"RP {addressTup[0]}:{addressTup[1]}\n{con.decode('utf-8')}", self.mode)
-            if a == 0 or a == 1:
-                self.cache.loadNewQuery(Utils.decodeQuery(con.decode('utf-8')))
             clientS.close()
             serverS.close()
             return
@@ -124,8 +141,6 @@ class ResponseServer:
             domain = dic['QUERY_INFO_NAME']
             res = Utils.decodeQuery(Utils.encodeQuery(dic))
             (res, logs, a) = self.cache.processQuery(res)
-            if a == 0 or a == 2:
-                res['FLAGS'].append('A')
             listServer = []
             it = 1
             serverS = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -139,29 +154,32 @@ class ResponseServer:
                     break
 
                 if res['RESPONSE_CODE'] == 2:
-                    if it == 1:
-                        for dom in self.configSR:
-                            if str(domain).endswith(dom):
+                    for dom in self.configSR:
+                        if str(domain).endswith(dom):
+                            if it == 1:
+                                it += 1
                                 for i in self.configSR[dom]:
                                     if i['value'] == "127.0.0.1":
-                                        listServer = self.st
-                                        it += 1
+                                        listServerAux = getServers(res, domain, dom)
                                         break
-                                    listServer.append(i['value'])
-                                break
-                        if listServer == []:
-                            listServer = self.st
-                            it += 1
-                    elif it <= 2:
-                        listServer = self.st
-                    else:
-                        listServerAux = getServers(res, domain)
-                        if listServerAux == listServer:
+                                    listServerAux = []
+                                    listServerAux.append(i['value'])
+                            else:
+                                listServerAux = getServers(res, domain, dom)
                             break
                         else:
-                            listServer = cleanList(listServerAux, listServer)
+                            if it == 1:
+                                it += 1
+                                listServerAux = self.st
+                            else:
+                                listServerAux = getServers(res, domain, dom)
+                    listServer = cleanList(listServerAux, listServer)
                 elif res['RESPONSE_CODE'] == 1:
-                    listServer = getServers(res, domain)
+                    listServerAux = getServers(res, domain)
+                    if listServerAux == listServer:
+                        break
+                    else:
+                        listServer = cleanList(listServerAux, listServer)
 
                 it += 1
                 hasNewResponse = False
@@ -171,6 +189,7 @@ class ResponseServer:
                         Utils.writeInLogFiles(logs, f"QE {server}:3000\n{Utils.encodeQuery(dic)}", self.mode)
                         con, add = serverS.recvfrom(1024)
                         res = Utils.decodeQuery(con.decode('utf-8'))
+                        a = False
                         hasNewResponse = True
                         Utils.writeInLogFiles(logs, f"RR {add[0]}:{add[1]}\n{con.decode('utf-8')}", self.mode)
                         break
@@ -182,10 +201,12 @@ class ResponseServer:
                 if not hasNewResponse:
                     break
 
+            if a:
+                res['FLAGS'].append('A')
+
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.cache.loadNewQuery(res)
             s.sendto(Utils.encodeQuery(res).encode('utf-8'), addressTup)
-            if a == 0 or a == 1:
-                self.cache.loadNewQuery(res)
             if logs == None:
                 Utils.writeInLogFiles(self.cache.logFiles, f"RP {addressTup[0]}:{addressTup[1]}\n{Utils.encodeQuery(res)}", self.mode)
             else:

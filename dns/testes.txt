@@ -1,0 +1,62 @@
+Exemplos de chamadas que podem ser corridas a partir de ~/..../dns
+
+python3 run.py c 10.0.14.11 mec.azurem.uni. MX A+Q
+python3 run.py c 10.0.14.11 azurem.uni. MX A+Q
+python3 run.py c 10.0.14.11 inf.gualtar.uni. MX A+Q
+python3 run.py c 10.0.14.11 gualtar.uni. MX A+Q
+python3 run.py c 10.0.14.11 uni. MX A+Q                     ---> erro 1
+
+python3 run.py c 10.0.14.11 mec.azurem.uni. M A+Q           ---> erro 1
+python3 run.py c 10.0.14.11 azurem.uni. M A+Q               ---> erro 1
+python3 run.py c 10.0.14.11 inf.gualtar.uni. M A+Q          ---> erro 1
+python3 run.py c 10.0.14.11 gualtar.uni. M A+Q              ---> erro 1
+python3 run.py c 10.0.14.11 uni. M A+Q                      ---> erro 1
+
+python3 run.py c 10.0.14.11 e.mec.azurem.uni. M A+Q         ---> erro 2
+python3 run.py c 10.0.14.11 e.azurem.uni. M A+Q             ---> erro 2
+python3 run.py c 10.0.14.11 e.inf.gualtar.uni. M A+Q        ---> erro 2
+python3 run.py c 10.0.14.11 e.gualtar.uni. M A+Q            ---> erro 2
+python3 run.py c 10.0.14.11 e.uni. M A+Q                    ---> erro 2
+
+python3 run.py c 10.0.14.11 mec.azurem.uni. MX A+Q+R
+python3 run.py c 10.0.14.11 azurem.uni. MX A+Q+R
+python3 run.py c 10.0.14.11 inf.gualtar.uni. MX A+Q+R
+python3 run.py c 10.0.14.11 gualtar.uni. MX A+Q+R
+python3 run.py c 10.0.14.11 uni. MX A+Q+R                   ---> erro 1
+
+python3 run.py c 10.0.14.11 mec.azurem.uni. M A+Q+R         ---> erro 1
+python3 run.py c 10.0.14.11 azurem.uni. M A+Q+R             ---> erro 1
+python3 run.py c 10.0.14.11 inf.gualtar.uni. M A+Q+R        ---> erro 1
+python3 run.py c 10.0.14.11 gualtar.uni. M A+Q+R            ---> erro 1
+python3 run.py c 10.0.14.11 uni. M A+Q+R                    ---> erro 1
+
+python3 run.py c 10.0.14.11 e.mec.azurem.uni. M A+Q+R       ---> erro 2
+python3 run.py c 10.0.14.11 e.azurem.uni. M A+Q+R           ---> erro 2
+python3 run.py c 10.0.14.11 e.inf.gualtar.uni. M A+Q+R      ---> erro 2
+python3 run.py c 10.0.14.11 e.gualtar.uni. M A+Q+R          ---> erro 2
+python3 run.py c 10.0.14.11 e.uni. M A+Q+R                  ---> erro 2
+
+
+
+
+
+
+python3 run.py sp root -d
+
+python3 run.py sp gualtar -d
+python3 run.py ss gualtar -d
+python3 run.py sr gualtar -d
+
+python3 run.py sp inf -d
+python3 run.py ss inf -d
+python3 run.py sr inf -d
+
+python3 run.py sp azurem -d
+python3 run.py ss azurem -d
+python3 run.py sr azurem -d
+
+python3 run.py sp mec -d
+python3 run.py ss mec -d
+python3 run.py sr mec -d
+
+
