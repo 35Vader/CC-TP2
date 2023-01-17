@@ -30,33 +30,26 @@ class Cache:
     def incTimeStamp(self):
         self.timestamp += 1
 
-    def debug(self):
-        while True:
-            try:
-                s = input()
-                if s == "lg":
-                    print('\n----------------')
-                    print(f"logFiles -> {self.logFiles}\nallLog -> {self.allLog}")
-                    print('----------------\n')
-                elif s == "t":
-                    print('\n----------------')
-                    print(f"timestamp -> {self.timestamp}")
-                    print('----------------\n')
-                elif s == "c":
-                    print('\n'*50)
-                elif s == "sc":
-                    print('\n---------------------------------------------------------\n')
-                    Utils.showTable(self.serverCache)
-                    print('---------------------------------------------------------\n')
-                elif s == "qc":
-                    print('\n---------------------------------------------------------\n')
-                    Utils.showTable(self.queryCache)
-                    print('---------------------------------------------------------\n')
-                elif s == "test":
-                    dic = Utils.decodeQuery("3001,R,0,3,3,3;cc.tp.,NS;tp. MX mx1.tp. 2,cc.tp. NS ns2.cc.tp. 86400,cc.tp. NS ns3.cc.tp. 86400;cc.tp. NS ns1.cc.tp. 86400,cc.tp. NS ns2.cc.tp. 86400,cc.tp. NS ns3.cc.tp. 86400;ns1.cc.tp. A 10.0.1.17 86400,ns2.cc.tp. A 10.0.15.10 86400,ns3.cc.tp. A 10.0.1.16 86400;")
-                    self.loadNewQuery(dic)
-            except:
-                pass
+    def debug(self, debugRequest):
+        if debugRequest == "lg":
+            print('\n----------------')
+            print(f"logFiles -> {self.logFiles}\nallLog -> {self.allLog}")
+            print('----------------\n')
+        elif debugRequest == "t":
+            print('\n----------------')
+            print(f"timestamp -> {self.timestamp}")
+            print('----------------\n')
+        elif debugRequest == "c":
+            print('\n'*50)
+        elif debugRequest == "sc":
+            print('\n---------------------------------------------------------\n')
+            Utils.showTable(self.serverCache)
+            print('---------------------------------------------------------\n')
+        elif debugRequest == "qc":
+            print('\n---------------------------------------------------------\n')
+            Utils.showTable(self.queryCache)
+            print('---------------------------------------------------------\n')
+
 
 
     # Functions that handle cache entries
@@ -354,7 +347,6 @@ class Cache:
                     self.serverCache.pop(dom)
 
         return (rv, ttl, a)
-
 
 
 

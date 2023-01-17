@@ -5,6 +5,7 @@ import time
 
 from Utilities.Utils import Utils
 from Utilities.Cache import Cache
+from Utilities.ZoneTransfer import ZoneTransfer
 from Utilities.ReadFiles import ReadFiles
 
 
@@ -37,9 +38,18 @@ class ResponseServer:
     mode = False
     st = []
     configSR = {}
+    queryIsActive = True
+    zoneTransferIsActive = False
+    configServer = None
+    serverDataBase = None
+    logFiles = None
+    zt = None
 
 
     def __init__(self, configServer, serverDataBase, logFiles, mode):
+        self.configServer = configServer
+        self.serverDataBase = serverDataBase
+        self.logFiles = logFiles
         self.mode = mode
         self.cache = Cache(serverDataBase, logFiles, mode)
 
@@ -52,6 +62,21 @@ class ResponseServer:
                 if 'LG' in configServer[domain]:
                     lg += configServer[domain]['LG']
                 self.configSR[domain] = configServer[domain]['DD']
+
+    def debug(self):
+        while True:
+            try:
+                debugRequest = input()
+                if debugRequest == "close":
+                    self.queryIsActive = False
+                    if self.zoneTransferIsActive:
+                        self.zt.closeServer()
+                        self.zoneTransferIsActive = False
+                    return
+                else:
+                    self.cache.debug(debugRequest)
+            except:
+                pass
 
     def removeDomainIP(self, listServer):
         ip = Utils.get_ip()
@@ -233,13 +258,8 @@ class ResponseServer:
             s.close()
 
     def run(self):
-
-        threading.Thread(
-            target=self.cache.debug,
-            daemon=True
-        ).start()
-
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(1)
 
         try:
             address = Utils.get_ip()
@@ -254,12 +274,24 @@ class ResponseServer:
         else:
             Utils.writeInLogFiles(self.cache.allLog, f"ST {address}:{port} shy", self.mode)
 
-        while True:
-            connection, addressTup = s.recvfrom(1024)
-            threading.Thread(
-                target=(self.handleQuery),
-                args=(connection, addressTup),
-                daemon=True
-            ).start()
+        while self.queryIsActive:
+            try:
+                connection, addressTup = s.recvfrom(1024)
+                threading.Thread(
+                    target=(self.handleQuery),
+                    args=(connection, addressTup),
+                    daemon=True
+                ).start()
+            except:
+                pass
 
+        Utils.writeInLogFiles(self.cache.allLog, f"SP {address}:{port} response-server close-request", self.mode)
         s.close()
+
+
+    def zoneTransfer(self):
+        self.zoneTransferIsActive = True
+        self.zt = ZoneTransfer(self.configServer, self.serverDataBase, self.logFiles, self.mode)
+        threading.Thread(
+            target= self.zt.zoneTransferResolver,
+        ).start()

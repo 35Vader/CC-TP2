@@ -129,21 +129,21 @@ class Server:
                         Utils.writeInLogFiles(self.logFiles, f"FL @ parameters-inconsistency domain-'{domain}' {self.configFile} ", self.mode)
                         exit(-1)
 
-        if hasPrimaryServer:
-            threading.Thread(
-                target=ZoneTransfer.zoneTransferResolver,
-                args=(self.configServer, self.serverDataBase, self.logFiles, self.mode),
-                daemon=True
-            ).start()
-
         self.responseServer = ResponseServer(self.configServer, self.serverDataBase, self.logFiles, self.mode)
+
+        if hasPrimaryServer:
+            self.responseServer.zoneTransfer()
         
         threading.Thread(
             target=self.responseServer.run,
+        ).start()
+        
+        threading.Thread(
+            target=self.responseServer.debug,
             daemon=True
         ).start()
 
-        while(True):
+        while(self.responseServer.queryIsActive):
             time.sleep(1)
             self.testSS()
             self.responseServer.cache.incTimeStamp()

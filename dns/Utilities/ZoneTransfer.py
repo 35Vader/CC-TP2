@@ -83,9 +83,24 @@ def processZT (connection:socket.socket, addressTup, config, dataBase, logFiles,
 
 
 class ZoneTransfer:
-    @staticmethod
-    def zoneTransferResolver (config, dataBase, logFiles, mode):
+    isActive = True
+    config = None
+    dataBase = None
+    logFiles = None
+    mode = False
+
+    def __init__(self, config, dataBase, logFiles, mode):
+        self.config = config
+        self.dataBase = dataBase
+        self.logFiles = logFiles
+        self.mode = mode
+
+    def closeServer(self):
+        self.isActive = False
+
+    def zoneTransferResolver (self):
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        soc.settimeout(1)
 
         try:
             address = Utils.get_ip()
@@ -93,25 +108,33 @@ class ZoneTransfer:
             soc.bind((address, port))
             (address, port) = soc.getsockname()
         except:
-            print(f"Couldnt bind to localhost:{6000}")
+            print(f"Couldnt bind to localhost:6000")
             sys.exit()
+
+        lg = []
+        for dom in self.dataBase.keys():
+            if self.dataBase[dom]["isSP"]:
+                lg += self.dataBase[dom]["domainLog"]
 
         soc.listen()
 
-        lg = []
-        for dom in dataBase.keys():
-            if dataBase[dom]["isSP"]:
-                lg += dataBase[dom]["domainLog"]
-
-        if mode:
-            Utils.writeInLogFiles(lg + logFiles, f"ST {address} {port} debug", mode)
+        if self.mode:
+            Utils.writeInLogFiles(lg + self.logFiles, f"ST {address} {port} debug", self.mode)
         else:
-            Utils.writeInLogFiles(lg + logFiles, f"ST {address} {port} shy", mode)
+            Utils.writeInLogFiles(lg + self.logFiles, f"ST {address} {port} shy", self.mode)
 
-        while True:
-            connection, addressTup = soc.accept()
-            threading.Thread(target=processZT,args=(connection, addressTup, config, dataBase, logFiles, mode), daemon=True).start()
+        while self.isActive:
+            try:
+                connection, addressTup = soc.accept()
+                threading.Thread(
+                    target=processZT,
+                    args=(connection, addressTup, self.config, self.dataBase, self.logFiles, self.mode),
+                    daemon=True
+                ).start()
+            except:
+                pass
 
+        Utils.writeInLogFiles(lg + self.logFiles, f"SP {address} {port} zone-transfer close-request", self.mode)
         soc.close()
 
     @staticmethod

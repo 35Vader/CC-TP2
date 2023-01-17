@@ -24,6 +24,8 @@ if __name__ == "__main__":
             configFile += "configSS.db"
         elif sys.argv[1] == "sr":
             configFile += "configSR.db"
+        elif sys.argv[1] == "s":
+            configFile += "configS.db"
         else:
             exit(1)
 

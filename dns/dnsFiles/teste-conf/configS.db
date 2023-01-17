@@ -1,0 +1,18 @@
+# Configuration file for primary server for azurem.uni.
+
+# [SS, SP, DD] -> { domain { type [{value port}] } }
+# [default]    -> { domain { type [{value}] } }
+# [domain] [type] [value] [port]
+
+azurem.uni DB dnsFiles/azurem-conf/DB.db
+azurem.uni SS 10.0.16.16
+azurem.uni SS 10.0.17.10
+azurem.uni DD 127.0.0.1
+azurem.uni LG log/azurem.log
+
+gualtar.uni SP 10.0.0.13
+gualtar.uni DD 127.0.0.1
+gualtar.uni LG log/gualtar-ss.log
+
+root ST dnsFiles/rootservers.db
+all LG log/all.log
